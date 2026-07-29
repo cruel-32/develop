@@ -23,7 +23,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -euo pipefail
-            cd "${{ secrets.PROJECT_DIR }}"
+            # 따옴표로 감싸면 bash가 "~"를 홈 디렉터리로 확장해주지 않으므로 직접 치환한다.
+            PROJECT_DIR="${{ secrets.PROJECT_DIR }}"
+            PROJECT_DIR="${PROJECT_DIR/#\~/$HOME}"
+            cd "$PROJECT_DIR"
 
             git fetch origin master
             git reset --hard origin/master
