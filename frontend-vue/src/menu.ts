@@ -19,18 +19,6 @@ export const menuTree: MenuNode[] = [
     label: "Version",
     children: [
       {
-        id: "v34",
-        label: "v3.4",
-        children: [
-          { id: "define-model", label: "defineModel", path: "version/v3.4/define-model" },
-          {
-            id: "v-bind-shorthand",
-            label: "v-bind 축약 문법",
-            path: "version/v3.4/v-bind-shorthand",
-          },
-        ],
-      },
-      {
         id: "v35",
         label: "v3.5",
         children: [
@@ -49,6 +37,18 @@ export const menuTree: MenuNode[] = [
             id: "on-watcher-cleanup",
             label: "onWatcherCleanup",
             path: "version/v3.5/on-watcher-cleanup",
+          },
+        ],
+      },
+      {
+        id: "v34",
+        label: "v3.4",
+        children: [
+          { id: "define-model", label: "defineModel", path: "version/v3.4/define-model" },
+          {
+            id: "v-bind-shorthand",
+            label: "v-bind 축약 문법",
+            path: "version/v3.4/v-bind-shorthand",
           },
         ],
       },

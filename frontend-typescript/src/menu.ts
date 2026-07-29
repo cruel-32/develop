@@ -19,30 +19,18 @@ export const menuTree: MenuNode[] = [
     label: "Version",
     children: [
       {
-        id: "v58",
-        label: "v5.8",
+        id: "v70",
+        label: "v7.0",
         children: [
           {
-            id: "return-branches",
-            label: "return문 분기별 타입 검사",
-            path: "version/v5.8/return-branches",
+            id: "template-literal-unicode",
+            label: "템플릿 리터럴 유니코드",
+            path: "version/v7.0/template-literal-unicode",
           },
           {
-            id: "erasable-syntax-only",
-            label: "erasableSyntaxOnly",
-            path: "version/v5.8/erasable-syntax-only",
-          },
-        ],
-      },
-      {
-        id: "v59",
-        label: "v5.9",
-        children: [
-          { id: "import-defer", label: "import defer", path: "version/v5.9/import-defer" },
-          {
-            id: "arraybuffer-split",
-            label: "ArrayBuffer/TypedArray 분리",
-            path: "version/v5.9/arraybuffer-split",
+            id: "native-compiler",
+            label: "네이티브 컴파일러",
+            path: "version/v7.0/native-compiler",
           },
         ],
       },
@@ -63,18 +51,30 @@ export const menuTree: MenuNode[] = [
         ],
       },
       {
-        id: "v70",
-        label: "v7.0",
+        id: "v59",
+        label: "v5.9",
+        children: [
+          { id: "import-defer", label: "import defer", path: "version/v5.9/import-defer" },
+          {
+            id: "arraybuffer-split",
+            label: "ArrayBuffer/TypedArray 분리",
+            path: "version/v5.9/arraybuffer-split",
+          },
+        ],
+      },
+      {
+        id: "v58",
+        label: "v5.8",
         children: [
           {
-            id: "template-literal-unicode",
-            label: "템플릿 리터럴 유니코드",
-            path: "version/v7.0/template-literal-unicode",
+            id: "return-branches",
+            label: "return문 분기별 타입 검사",
+            path: "version/v5.8/return-branches",
           },
           {
-            id: "native-compiler",
-            label: "네이티브 컴파일러",
-            path: "version/v7.0/native-compiler",
+            id: "erasable-syntax-only",
+            label: "erasableSyntaxOnly",
+            path: "version/v5.8/erasable-syntax-only",
           },
         ],
       },
