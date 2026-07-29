@@ -2,6 +2,11 @@
 import { ref } from "vue";
 import { Repl, useStore } from "@vue/repl";
 import CodeMirror from "@vue/repl/codemirror-editor";
+// 이 CSS 안에 `.dark .vue-repl { --bg: ...; }` 같은 다크 테마 변수가 들어있다.
+// theme="dark" prop만으로는 적용되지 않고, 이 스타일시트가 로드되어 있어야
+// 그 prop이 실제로 어두운 배색으로 반영된다(공식 README의 "3.0부터 필요 없음" 안내는
+// .dark 클래스를 직접 토글할 필요가 없다는 뜻이지, CSS 자체가 필요 없다는 뜻이 아니었다).
+import "@vue/repl/style.css";
 
 /**
  * 실제 @vue/compiler-sfc + Vue 런타임을 CDN에서 불러와 돌리는 진짜 Vue SFC 플레이그라운드
@@ -46,6 +51,7 @@ async function handleReset() {
         :store="store"
         :editor="CodeMirror"
         theme="dark"
+        preview-theme
         :show-compile-output="false"
         :show-import-map="false"
         :show-ts-config="false"
