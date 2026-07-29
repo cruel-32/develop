@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.use("/api/people", peopleRouter);
 
-const FRONTEND_APPS = ["react", "vue", "typescript"] as const;
+const FRONTEND_APPS = ["react", "vue", "typescript", "ecma"] as const;
 
 for (const name of FRONTEND_APPS) {
   const appDir = path.join(publicDir, name);

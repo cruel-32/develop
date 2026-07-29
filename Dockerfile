@@ -21,6 +21,13 @@ RUN npm ci
 COPY frontend-typescript/ ./
 RUN npm run build
 
+FROM node:24-alpine AS ecma-build
+WORKDIR /app
+COPY frontend-ecma/package.json frontend-ecma/package-lock.json ./
+RUN npm ci
+COPY frontend-ecma/ ./
+RUN npm run build
+
 FROM node:24-alpine AS backend-build
 WORKDIR /app
 COPY backend/package.json backend/package-lock.json ./
@@ -39,6 +46,7 @@ COPY backend/public/landing ./public/landing
 COPY --from=react-build /app/dist ./public/react
 COPY --from=vue-build /app/dist ./public/vue
 COPY --from=typescript-build /app/dist ./public/typescript
+COPY --from=ecma-build /app/dist ./public/ecma
 
 EXPOSE 4000
 CMD ["node", "dist/index.js"]
