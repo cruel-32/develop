@@ -10,15 +10,44 @@
  * 코드는 async 함수 본문으로 감싸 실행하므로 top-level await 스타일 코드를 그대로 쓸 수
  * 있고, 실행 중 호출된 console.log/error/warn을 가로채 콘솔 패널에 그대로 보여준다.
  *
- * 에디터는 CodeMirror 6(javascript 언어 지원 + oneDark 테마)로 구성해, react-live나
- * @vue/repl의 CodeMirror 에디터와 동일한 수준의 신택스 하이라이팅을 갖춘다.
+ * 에디터는 CodeMirror 6(javascript 언어 지원)로 구성하되, 정적 코드 예시(codeBlock)와
+ * react-live(CodeBlock/Playground)가 쓰는 prism-react-renderer의 vsDark 팔레트를 그대로
+ * 옮겨써서, 세 프로젝트의 코드 색상이 완전히 동일하게 보이도록 한다.
  */
 
 import { EditorView, keymap } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
-import { oneDark } from "@codemirror/theme-one-dark";
+import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
+import { tags as t } from "@lezer/highlight";
+
+// prism-react-renderer의 themes.vsDark와 동일한 색상값(VS Code Dark+ 계열)
+const vsDarkHighlightStyle = HighlightStyle.define([
+  { tag: t.comment, color: "rgb(106, 153, 85)" },
+  { tag: [t.keyword, t.controlKeyword, t.moduleKeyword, t.operatorKeyword], color: "rgb(86, 156, 214)" },
+  { tag: [t.number, t.bool, t.null], color: "rgb(181, 206, 168)" },
+  { tag: [t.string, t.special(t.string)], color: "rgb(206, 145, 120)" },
+  { tag: [t.propertyName, t.attributeName], color: "rgb(156, 220, 254)" },
+  { tag: [t.function(t.variableName), t.function(t.propertyName)], color: "rgb(220, 220, 170)" },
+  { tag: [t.className, t.typeName], color: "rgb(78, 201, 176)" },
+  { tag: [t.punctuation, t.operator], color: "rgb(212, 212, 212)" },
+  { tag: t.variableName, color: "rgb(156, 220, 254)" },
+]);
+
+const vsDarkEditorTheme = EditorView.theme(
+  {
+    "&": { backgroundColor: "#1e1e1e", color: "#9cdcfe" },
+    ".cm-content": { caretColor: "#e2e8f0" },
+    ".cm-gutters": { backgroundColor: "#1e1e1e", color: "#6b7280", border: "none" },
+    ".cm-activeLine": { backgroundColor: "rgba(255, 255, 255, 0.04)" },
+    ".cm-activeLineGutter": { backgroundColor: "rgba(255, 255, 255, 0.04)" },
+    ".cm-selectionBackground, &.cm-focused .cm-selectionBackground": {
+      backgroundColor: "rgba(96, 165, 250, 0.25)",
+    },
+  },
+  { dark: true },
+);
 
 function escapeHtml(value) {
   const div = document.createElement("div");
@@ -93,7 +122,8 @@ export function mountEcmaPlayground(container, opts) {
           { key: "Mod-Enter", run: () => (run(), true) },
         ]),
         javascript(),
-        oneDark,
+        vsDarkEditorTheme,
+        syntaxHighlighting(vsDarkHighlightStyle),
         EditorView.lineWrapping,
       ],
     }),
@@ -104,7 +134,7 @@ export function mountEcmaPlayground(container, opts) {
     const entries = [];
     const fakeConsole = {
       log: (...args) => entries.push({ level: "log", text: args.map(formatArg).join(" ") }),
-      warn: (...args) => entries.push({ level: "log", text: args.map(formatArg).join(" ") }),
+      warn: (...args) => entries.push({ level: "warn", text: args.map(formatArg).join(" ") }),
       error: (...args) => entries.push({ level: "error", text: args.map(formatArg).join(" ") }),
     };
 

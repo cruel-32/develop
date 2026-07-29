@@ -360,39 +360,66 @@ textarea:focus-visible {
   line-height: 1.6;
   margin: 0;
   box-shadow: var(--shadow-card);
-  background: #0b1220;
-  color: #cbd5e1;
+  background: #1e1e1e;
+  color: #9cdcfe;
   white-space: pre-wrap;
 }
 
-/* Prism.js 토큰 색상 (별도 테마 CSS를 import하지 않고 직접 지정) */
-.code-block .token.comment {
-  color: var(--text-faint);
-  font-style: italic;
+/* .content code(본문 인라인 코드 강조)가 코드 블록 안의 <code>에도 걸려
+   배경색이 줄마다 깔리는 것을 막는다 - 코드 블록은 자체 배경만 사용한다. */
+.code-block code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: 1em;
 }
+
+/* Prism.js 토큰 색상 - react-live(prism-react-renderer)의 vsDark 테마와 동일한 팔레트 */
+.code-block .token.comment,
+.code-block .token.prolog {
+  color: rgb(106, 153, 85);
+}
+.code-block .token.builtin,
+.code-block .token.changed,
 .code-block .token.keyword,
-.code-block .token.tag {
-  color: #c084fc;
-}
-.code-block .token.string,
-.code-block .token.attr-value {
-  color: #86efac;
-}
-.code-block .token.function,
-.code-block .token.class-name {
-  color: #7dd3fc;
+.code-block .token.interpolation-punctuation {
+  color: rgb(86, 156, 214);
 }
 .code-block .token.number,
-.code-block .token.boolean {
-  color: #fbbf24;
+.code-block .token.inserted {
+  color: rgb(181, 206, 168);
+}
+.code-block .token.constant {
+  color: rgb(100, 102, 149);
 }
 .code-block .token.attr-name,
-.code-block .token.property {
-  color: #93c5fd;
+.code-block .token.variable {
+  color: rgb(156, 220, 254);
+}
+.code-block .token.deleted,
+.code-block .token.string,
+.code-block .token.attr-value,
+.code-block .token.template-punctuation {
+  color: rgb(206, 145, 120);
+}
+.code-block .token.selector {
+  color: rgb(215, 186, 125);
+}
+.code-block .token.tag {
+  color: rgb(86, 156, 214);
 }
 .code-block .token.punctuation,
 .code-block .token.operator {
-  color: var(--text-muted);
+  color: rgb(212, 212, 212);
+}
+.code-block .token.function {
+  color: rgb(220, 220, 170);
+}
+.code-block .token.class-name {
+  color: rgb(78, 201, 176);
+}
+.code-block .token.char {
+  color: rgb(209, 105, 105);
 }
 
 .ecma-playground-wrapper {
@@ -434,18 +461,10 @@ textarea:focus-visible {
   color: #cbd5e1;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
-.ecma-playground-run {
-  border-color: var(--accent-strong);
-  color: var(--accent);
-}
-
-.ecma-playground-run:hover {
-  background: rgba(96, 165, 250, 0.14);
-}
-
+.ecma-playground-run:hover,
 .ecma-playground-reset:hover {
   border-color: var(--accent);
   color: var(--accent);
@@ -454,7 +473,7 @@ textarea:focus-visible {
 .ecma-playground-body {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  height: 22rem;
+  height: 26rem;
 }
 
 .ecma-playground-editor {
@@ -468,8 +487,11 @@ textarea:focus-visible {
 
 .ecma-playground-editor .cm-editor {
   height: 100%;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.85rem;
+}
+
+.ecma-playground-editor .cm-content {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 .ecma-playground-editor .cm-scroller {
@@ -509,7 +531,7 @@ textarea:focus-visible {
 }
 
 .ecma-console-item {
-  padding: 0.3rem 0;
+  padding: 0.25rem 0;
   border-bottom: 1px solid rgba(38, 51, 72, 0.5);
   white-space: pre-wrap;
   word-break: break-word;
@@ -517,17 +539,12 @@ textarea:focus-visible {
   color: #cbd5e1;
 }
 
-.ecma-console-item.log::before {
-  content: "> ";
-  color: var(--text-faint);
+.ecma-console-item.warn {
+  color: var(--warn);
 }
 
 .ecma-console-item.error {
   color: var(--danger);
-}
-
-.ecma-console-item.error::before {
-  content: "✗ ";
 }
 
 .ecma-playground-console-empty {
