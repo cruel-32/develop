@@ -1,0 +1,41 @@
+name: Deploy to home server
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+# 연달아 push되어도 배포가 겹쳐 실행되지 않도록 직렬화한다.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH로 접속해 git pull + docker compose 재빌드/재기동
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+            cd "${{ secrets.PROJECT_DIR }}"
+
+            git fetch origin master
+            git reset --hard origin/master
+
+            # Dockerfile이 멀티스테이지로 backend + frontend-react/vue/typescript를
+            # 전부 빌드하므로, 이 한 줄이 "각 프로젝트 빌드"에 해당한다.
+            docker compose up -d --build
+
+            # 오래된 이미지가 서버 디스크를 채우지 않도록 정리
+            docker image prune -f
+
+            # 배포 후 헬스체크: app 컨테이너가 실제로 응답하는지 확인
+            sleep 5
+            PORT="$(grep -E '^APP_PORT=' .env | cut -d= -f2)"
+            curl -fsS "http://localhost:${PORT:-3000}/" > /dev/null
