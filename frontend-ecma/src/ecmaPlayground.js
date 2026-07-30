@@ -55,15 +55,53 @@ function escapeHtml(value) {
   return div.innerHTML;
 }
 
+/**
+ * 브라우저 개발자 도구 콘솔이 값을 찍는 방식(Set(2) {'a', 'b'}, [1, 2], { a: 1 } 등)을
+ * 최대한 흉내낸다. JSON.stringify는 Set/Map/함수/undefined/Symbol을 직렬화하지 못하거나
+ * (Set·Map은 자체 열거 속성이 없어 "{}"가 되어버림) 아예 다른 값으로 바꿔버려서 실제
+ * 브라우저 콘솔 출력과 딴판이 되는 문제가 있었다.
+ */
+function formatValue(value, seen = new Set()) {
+  if (typeof value === "string") return `'${value}'`;
+  if (typeof value === "bigint") return `${value}n`;
+  if (typeof value === "function") {
+    const name = value.name || "anonymous";
+    return value.prototype && /^class\s/.test(Function.prototype.toString.call(value))
+      ? `class ${name}`
+      : `ƒ ${name}()`;
+  }
+  if (typeof value === "symbol") return value.toString();
+  if (value === null || typeof value !== "object") return String(value);
+
+  if (seen.has(value)) return "[Circular]";
+  seen = new Set(seen).add(value);
+
+  if (value instanceof Error) return value.stack ?? `${value.name}: ${value.message}`;
+  if (value instanceof Date) return value.toISOString();
+  if (value instanceof RegExp) return value.toString();
+
+  if (Array.isArray(value)) {
+    return `[ ${value.map((v) => formatValue(v, seen)).join(", ")} ]`;
+  }
+  if (value instanceof Set) {
+    const items = [...value].map((v) => formatValue(v, seen)).join(", ");
+    return `Set(${value.size}) {${items ? ` ${items} ` : ""}}`;
+  }
+  if (value instanceof Map) {
+    const items = [...value].map(([k, v]) => `${formatValue(k, seen)} => ${formatValue(v, seen)}`).join(", ");
+    return `Map(${value.size}) {${items ? ` ${items} ` : ""}}`;
+  }
+
+  const ctorName = value.constructor && value.constructor !== Object ? `${value.constructor.name} ` : "";
+  const entries = Object.entries(value).map(([k, v]) => `${k}: ${formatValue(v, seen)}`);
+  return `${ctorName}{${entries.length ? ` ${entries.join(", ")} ` : ""}}`;
+}
+
 function formatArg(arg) {
   if (typeof arg === "string") return arg;
   if (arg instanceof Error) return arg.stack ?? `${arg.name}: ${arg.message}`;
   try {
-    return JSON.stringify(
-      arg,
-      (_key, value) => (typeof value === "bigint" ? `${value}n` : value),
-      2,
-    );
+    return formatValue(arg);
   } catch {
     return String(arg);
   }
@@ -130,13 +168,35 @@ export function mountEcmaPlayground(container, opts) {
     }),
   });
 
+  // setTimeout/Promise.then처럼 async 래퍼가 끝난 뒤에도 계속 들어오는 로그가 많다
+  // (예: Promise.all(...).then(cb) 를 await 하지 않고 그냥 실행문으로 남겨둔 예제).
+  // 그래서 "실행 완료 후 한 번에 렌더링"이 아니라 로그가 들어올 때마다 즉시 append한다.
+  // runGeneration으로 리셋/재실행 이후에도 뒤늦게 도착하는 이전 실행의 로그를 걸러낸다.
+  let runGeneration = 0;
+
+  function appendConsoleEntry(generation, level, text) {
+    if (generation !== runGeneration) return;
+    if (consoleEl.dataset.empty === "true") {
+      consoleEl.innerHTML = "";
+      consoleEl.dataset.empty = "false";
+    }
+    const item = document.createElement("div");
+    item.className = `ecma-console-item ${level}`;
+    item.textContent = text;
+    consoleEl.appendChild(item);
+  }
+
   async function run() {
+    const generation = ++runGeneration;
     const code = view.state.doc.toString();
-    const entries = [];
+
+    consoleEl.innerHTML = "";
+    consoleEl.dataset.empty = "true";
+
     const fakeConsole = {
-      log: (...args) => entries.push({ level: "log", text: args.map(formatArg).join(" ") }),
-      warn: (...args) => entries.push({ level: "warn", text: args.map(formatArg).join(" ") }),
-      error: (...args) => entries.push({ level: "error", text: args.map(formatArg).join(" ") }),
+      log: (...args) => appendConsoleEntry(generation, "log", args.map(formatArg).join(" ")),
+      warn: (...args) => appendConsoleEntry(generation, "warn", args.map(formatArg).join(" ")),
+      error: (...args) => appendConsoleEntry(generation, "error", args.map(formatArg).join(" ")),
     };
 
     try {
@@ -144,19 +204,21 @@ export function mountEcmaPlayground(container, opts) {
       const runner = new Function("console", `"use strict"; return (async () => {\n${code}\n})();`);
       await runner(fakeConsole);
     } catch (err) {
-      entries.push({ level: "error", text: err instanceof Error ? `${err.name}: ${err.message}` : String(err) });
+      appendConsoleEntry(
+        generation,
+        "error",
+        err instanceof Error ? `${err.name}: ${err.message}` : String(err),
+      );
     }
 
-    consoleEl.innerHTML =
-      entries.length === 0
-        ? `<p class="ecma-playground-console-empty">(콘솔 출력 없음 — console.log를 호출하는 코드를 실행해보세요)</p>`
-        : entries
-            .map((e) => `<div class="ecma-console-item ${e.level}">${escapeHtml(e.text)}</div>`)
-            .join("");
+    if (generation === runGeneration && consoleEl.dataset.empty === "true") {
+      consoleEl.innerHTML = `<p class="ecma-playground-console-empty">(콘솔 출력 없음 — console.log를 호출하는 코드를 실행해보세요)</p>`;
+    }
   }
 
   runBtn.addEventListener("click", run);
   resetBtn.addEventListener("click", () => {
+    runGeneration++;
     view.dispatch({
       changes: { from: 0, to: view.state.doc.length, insert: initialCode },
     });

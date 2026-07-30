@@ -53,11 +53,11 @@ const acc = new BankAccount("Ada", 1000);
 acc.deposit(500);
 console.log(acc.balance, BankAccount.describe());
 
-try {
-  console.log(acc.#balance); // SyntaxError — 클래스 밖에서는 #balance라는 이름 자체를 못 씀
-} catch (err) {
-  console.log("직접 접근 불가:", err.message);
-}
+// 아래 줄의 주석을 풀고 다시 실행해보세요 — acc.#balance는 클래스 밖에서 문법적으로
+// 아예 쓸 수 없는 이름이라 SyntaxError가 됩니다. TypeError와 달리 "문법 파싱 단계"의
+// 에러라서 try/catch로도 잡을 수 없고(스크립트 자체가 파싱에 실패해 실행조차 안 됨),
+// 그래서 이 줄이 살아있으면 이 실습창 전체가 실행되지 않습니다.
+// console.log(acc.#balance);
 `;
 
 /** @type {import("../../../router").PageRender} */
