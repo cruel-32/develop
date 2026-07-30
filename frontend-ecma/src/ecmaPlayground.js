@@ -15,7 +15,7 @@
  * 옮겨써서, 세 프로젝트의 코드 색상이 완전히 동일하게 보이도록 한다.
  */
 
-import { EditorView, keymap } from "@codemirror/view";
+import { EditorView, keymap, lineNumbers } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { javascript } from "@codemirror/lang-javascript";
@@ -122,6 +122,7 @@ export function mountEcmaPlayground(container, opts) {
           { key: "Mod-Enter", run: () => (run(), true) },
         ]),
         javascript(),
+        lineNumbers(),
         vsDarkEditorTheme,
         syntaxHighlighting(vsDarkHighlightStyle),
         EditorView.lineWrapping,

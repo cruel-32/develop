@@ -423,6 +423,28 @@ a:focus-visible {
   -moz-tab-size: 4 !important;
 }
 
+.playground-editor pre {
+  counter-reset: line;
+  padding-left: 3.4rem !important;
+}
+
+.playground-editor .token-line {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  counter-increment: line;
+}
+
+.playground-editor .token-line::before {
+  content: counter(line);
+  position: absolute;
+  left: -2.6rem;
+  width: 2rem;
+  text-align: right;
+  color: var(--text-faint);
+  user-select: none;
+}
+
 .playground-editor textarea:focus {
   outline: none;
 }
