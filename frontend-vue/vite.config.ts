@@ -9,8 +9,10 @@ export default defineConfig({
     exclude: ["@vue/repl"],
   },
   server: {
+    host: true,
+    watch: process.env.VITE_WATCH_POLL ? { usePolling: true } : undefined,
     proxy: {
-      "/api": "http://localhost:4000",
+      "/api": process.env.VITE_API_PROXY_TARGET ?? "http://localhost:4000",
     },
   },
 });

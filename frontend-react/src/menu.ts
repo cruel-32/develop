@@ -61,6 +61,17 @@ export const menuTree: MenuNode[] = [
           },
         ],
       },
+      {
+        id: "data-fetching",
+        label: "Data Fetching",
+        children: [
+          {
+            id: "tanstack-query",
+            label: "TanStack Query",
+            path: "external-module/data-fetching/tanstack-query",
+          },
+        ],
+      },
     ],
   },
   {

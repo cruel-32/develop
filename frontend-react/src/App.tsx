@@ -17,6 +17,7 @@ const UseOptimisticPage = lazy(() => import("./pages/version/v19/UseOptimisticPa
 const UsePage = lazy(() => import("./pages/version/v19/UsePage"));
 const UseFormStatusPage = lazy(() => import("./pages/version/v19/UseFormStatusPage"));
 const ZustandPage = lazy(() => import("./pages/external-module/store/ZustandPage"));
+const TanStackQueryPage = lazy(() => import("./pages/external-module/data-fetching/TanStackQueryPage"));
 const CrudDemoPage = lazy(() => import("./pages/crud/CrudDemoPage"));
 
 function PageFallback() {
@@ -49,6 +50,10 @@ export default function App() {
         <Route path="version/v19/use" element={withSuspense(UsePage)} />
         <Route path="version/v19/use-form-status" element={withSuspense(UseFormStatusPage)} />
         <Route path="external-module/store/zustand" element={withSuspense(ZustandPage)} />
+        <Route
+          path="external-module/data-fetching/tanstack-query"
+          element={withSuspense(TanStackQueryPage)}
+        />
         <Route path="crud-demo" element={withSuspense(CrudDemoPage)} />
       </Route>
     </Routes>

@@ -39,16 +39,19 @@ React (대메뉴)
 │       ├─ use
 │       └─ useFormStatus
 ├─ External Module (중메뉴, Version과 동급)
-│   └─ Store (소메뉴)
-│       └─ Zustand (소소메뉴)
+│   ├─ Store (소메뉴)
+│   │   └─ Zustand (소소메뉴)
+│   └─ Data Fetching (소메뉴)
+│       └─ TanStack Query (소소메뉴)
 └─ CRUD Demo (기존 백엔드 연동 데모, 별도 최상위 항목)
 ```
 
 > deprecated된 훅(`useFormState` 등 `useActionState`로 대체된 것)은 의도적으로 제외했다.
 > React 17은 새로 추가된 훅이 없는 "No New Features" 릴리스라 다루지 않는다.
 > `External Module`은 React 코어가 아닌 서드파티 라이브러리(상태관리, 라우팅, 데이터
-> 페칭 등)를 위한 `Version`과 동급의 자리로, 지금은 `Store > Zustand`만 있지만 나중에
-> `Routing > React Router`, `Data Fetching > TanStack Query` 같은 갈래를 그 옆에 추가할 수 있다.
+> 페칭 등)를 위한 `Version`과 동급의 자리로, 지금은 `Store > Zustand`와
+> `Data Fetching > TanStack Query`가 있지만 나중에 `Routing > React Router` 같은 갈래를
+> 그 옆에 추가할 수 있다.
 
 ## 페이지 구조 규칙
 

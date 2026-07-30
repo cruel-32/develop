@@ -43,6 +43,43 @@ Express + Drizzle ORM 백엔드 하나와, React / Vue / TypeScript(vanilla) / E
 
 ## 로컬 개발
 
+`docker-compose.yml`(운영용)은 4개 프론트엔드를 전부 빌드해서 정적 파일로 서빙하므로,
+코드 한 줄 바꿀 때마다 이미지를 다시 빌드해야 해서 개발용으로는 느립니다. 로컬 개발에는
+아래 두 가지 방법 중 하나를 씁니다.
+
+### 방법 A — `docker-compose.local.yml` (권장)
+
+Postgres + backend(`tsx watch`) + 프론트엔드 4개(`vite dev`)를 모두 컨테이너로 띄우되,
+소스 디렉토리를 bind mount해서 파일을 저장하는 즉시 컨테이너 안에서 재컴파일/HMR이 동작합니다.
+`node_modules`는 named volume으로 분리되어 있어 호스트의 `npm install` 여부와 무관합니다.
+
+```bash
+docker compose -f docker-compose.local.yml up -d --build
+```
+
+| 서비스 | 접속 URL |
+|---|---|
+| backend API | http://localhost:4100/api/people |
+| react | http://localhost:5273/react/ |
+| vue | http://localhost:5274/vue/ |
+| typescript | http://localhost:5275/typescript/ |
+| ecma | http://localhost:5276/ecma/ |
+| Postgres (호스트에서 직접 접속용) | localhost:15432 |
+
+각 프론트엔드는 각자의 vite dev 서버가 `/api` 요청을 컨테이너 내부에서 `http://backend:4000`
+으로 프록시합니다. 브라우저는 항상 자기 자신의 오리진(5273~5276)에만 요청을 보내므로
+**CORS가 애초에 발생하지 않습니다.** (백엔드에도 `NODE_ENV !== "production"`일 때만 동작하는
+CORS 허용 미들웨어를 넣어뒀지만, 프록시를 쓰는 한 실제로 탈 일은 없습니다 — 프록시 없이
+브라우저에서 백엔드 포트로 직접 붙는 경우를 위한 안전장치입니다.)
+
+```bash
+docker compose -f docker-compose.local.yml down        # 컨테이너만 정리 (DB 데이터는 유지)
+docker compose -f docker-compose.local.yml down -v      # DB 데이터까지 초기화
+docker compose -f docker-compose.local.yml logs -f react   # 특정 서비스 로그만 보기
+```
+
+### 방법 B — 로컬 프로세스로 직접 실행
+
 각 프로젝트는 독립된 `package.json`을 가진 별도 패키지입니다 (workspace 아님).
 
 ```bash
