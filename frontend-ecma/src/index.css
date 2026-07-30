@@ -491,7 +491,12 @@ textarea:focus-visible {
 }
 
 .ecma-playground-editor .cm-content {
+  padding: 10px 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.ecma-playground-editor .cm-line {
+  padding: 0 10px;
 }
 
 .ecma-playground-editor .cm-scroller {
