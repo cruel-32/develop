@@ -9,8 +9,8 @@ export default function Home() {
       </p>
       <p>
         메뉴 구조는 <strong>Version</strong>(React 버전별 신규 API)처럼 계속 늘어날 수
-        있도록 설계되어 있어서, 이후 v20 같은 새 버전이나 React Query, Redux 같은 다른
-        주제도 같은 방식으로 추가될 예정입니다.
+        있도록 설계되어 있어서, 이후 v20 같은 새 버전이나 다른 상태관리/데이터 페칭
+        라이브러리도 같은 방식으로 추가될 예정입니다.
       </p>
     </article>
   );

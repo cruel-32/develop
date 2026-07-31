@@ -59,6 +59,11 @@ export const menuTree: MenuNode[] = [
             label: "Zustand",
             path: "external-module/store/zustand",
           },
+          {
+            id: "jotai",
+            label: "Jotai",
+            path: "external-module/store/jotai",
+          },
         ],
       },
       {
