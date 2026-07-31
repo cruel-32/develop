@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readFile } from "node:fs/promises";
 import peopleRouter from "./routes/people.js";
 import { runMigrations } from "./db/migrate.js";
 import { seedIfEmpty } from "./db/seed.js";
@@ -67,22 +68,19 @@ for (const name of FRONTEND_APPS) {
   });
 }
 
+const landingHtmlPath = path.join(publicDir, "landing", "index.html");
+
 if (devPorts.size > 0) {
-  app.get("/", (req, res) => {
-    const links = FRONTEND_APPS.map((name) => {
+  // 랜딩페이지 디자인은 하나(public/landing/index.html)만 유지하고, 개발 모드에서는
+  // 카드의 href만 각 프론트엔드의 vite dev 서버 주소로 치환해 그대로 재사용한다.
+  app.get("/", async (req, res) => {
+    const html = await readFile(landingHtmlPath, "utf-8");
+    const rewritten = FRONTEND_APPS.reduce((acc, name) => {
       const devPort = devPorts.get(name);
-      const href = devPort ? `http://${req.hostname}:${devPort}/${name}/` : `/${name}`;
-      return `<a class="card" href="${href}">${name}</a>`;
-    }).join("\n      ");
-    res.type("html").send(`<!doctype html>
-<html lang="ko">
-  <body style="font-family:system-ui,sans-serif;background:#0f172a;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:1.5rem;margin:0;">
-    <h1>어떤 프론트엔드를 확인하시겠어요? (개발 모드)</h1>
-    <nav style="display:flex;gap:1rem;">
-      ${links}
-    </nav>
-  </body>
-</html>`);
+      if (!devPort) return acc;
+      return acc.replace(`href="/${name}"`, `href="http://${req.hostname}:${devPort}/${name}/"`);
+    }, html);
+    res.type("html").send(rewritten);
   });
 } else {
   app.use("/", express.static(path.join(publicDir, "landing")));

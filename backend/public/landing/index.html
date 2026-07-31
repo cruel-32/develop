@@ -310,25 +310,26 @@
         line-height: 1.6;
       }
 
-      /* 태블릿 이하: 접근성 있는 폰트 크기로 상향, vw 의존도를 낮춰 과도하게 눌리지 않게 함 */
+      /* 태블릿 이하: /react, /vue 학습실의 본문 폰트 크기(h1: 1.65rem, 본문: 1.02rem)와
+         동일한 수준으로 맞춰서, 랜딩페이지만 유독 작게 느껴지지 않게 한다. */
       @media (max-width: 40rem) {
         .page {
           padding: 2.25rem 1.1rem 2.5rem;
         }
 
         .eyebrow {
-          font-size: 0.8rem;
-          padding: 0.35rem 0.8rem;
+          font-size: 0.88rem;
+          padding: 0.4rem 0.9rem;
         }
 
         h1 {
-          font-size: 1.7rem;
+          font-size: 1.65rem;
           line-height: 1.35;
         }
 
         header.hero p {
-          font-size: 1rem;
-          line-height: 1.7;
+          font-size: 1.02rem;
+          line-height: 1.75;
         }
 
         .grid {
@@ -337,35 +338,35 @@
         }
 
         a.card {
-          padding: 1.1rem 1.15rem;
+          padding: 1.15rem 1.2rem;
         }
 
         .card-icon {
-          width: 2.6rem;
-          height: 2.6rem;
-          font-size: 1.25rem;
+          width: 2.75rem;
+          height: 2.75rem;
+          font-size: 1.35rem;
         }
 
         .card-title {
-          font-size: 1.08rem;
+          font-size: 1.15rem;
         }
 
         .card-desc {
-          font-size: 0.9rem;
+          font-size: 0.98rem;
           white-space: normal;
         }
 
         .card-arrow {
-          font-size: 1.25rem;
+          font-size: 1.3rem;
         }
 
         .stat-chip {
-          font-size: 0.85rem;
-          padding: 0.5rem 1rem;
+          font-size: 0.92rem;
+          padding: 0.55rem 1.1rem;
         }
 
         footer {
-          font-size: 0.82rem;
+          font-size: 0.9rem;
           padding: 0 0.5rem;
         }
       }
