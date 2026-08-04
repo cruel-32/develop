@@ -12,6 +12,16 @@ import { render as strictByDefaultRender } from "./pages/version/v60/strictByDef
 import { render as mapGetOrInsertRender } from "./pages/version/v60/mapGetOrInsert";
 import { render as templateLiteralUnicodeRender } from "./pages/version/v70/templateLiteralUnicode";
 import { render as nativeCompilerRender } from "./pages/version/v70/nativeCompiler";
+import { render as dialogElementRender } from "./pages/html-css/semantics/dialogElement";
+import { render as detailsSummaryRender } from "./pages/html-css/semantics/detailsSummary";
+import { render as formValidationRender } from "./pages/html-css/forms/formValidation";
+import { render as popoverRender } from "./pages/html-css/forms/popover";
+import { render as flexboxGridRender } from "./pages/html-css/layout/flexboxGrid";
+import { render as containerQueriesRender } from "./pages/html-css/layout/containerQueries";
+import { render as hasSelectorRender } from "./pages/html-css/selectors/hasSelector";
+import { render as cascadeLayersRender } from "./pages/html-css/selectors/cascadeLayers";
+import { render as customPropertiesColorRender } from "./pages/html-css/color-motion/customPropertiesColor";
+import { render as viewTransitionsRender } from "./pages/html-css/color-motion/viewTransitions";
 import { render as crudDemoRender } from "./pages/crud/CrudDemoPage";
 
 registerRoute("", homeRender);
@@ -23,6 +33,16 @@ registerRoute("version/v6.0/strict-by-default", strictByDefaultRender);
 registerRoute("version/v6.0/map-get-or-insert", mapGetOrInsertRender);
 registerRoute("version/v7.0/template-literal-unicode", templateLiteralUnicodeRender);
 registerRoute("version/v7.0/native-compiler", nativeCompilerRender);
+registerRoute("html-css/semantics/dialog-element", dialogElementRender);
+registerRoute("html-css/semantics/details-summary", detailsSummaryRender);
+registerRoute("html-css/forms/form-validation", formValidationRender);
+registerRoute("html-css/forms/popover", popoverRender);
+registerRoute("html-css/layout/flexbox-grid", flexboxGridRender);
+registerRoute("html-css/layout/container-queries", containerQueriesRender);
+registerRoute("html-css/selectors/has-selector", hasSelectorRender);
+registerRoute("html-css/selectors/cascade-layers", cascadeLayersRender);
+registerRoute("html-css/color-motion/custom-properties-color", customPropertiesColorRender);
+registerRoute("html-css/color-motion/view-transitions", viewTransitionsRender);
 registerRoute("crud-demo", crudDemoRender);
 
 const root = document.querySelector<HTMLDivElement>("#app")!;
