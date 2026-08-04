@@ -1,41 +1,84 @@
 # develop.cloudish.cloud
 
-Express + Drizzle ORM 백엔드 하나와, React / Vue / TypeScript(vanilla) 세 가지로 빌드한
-프론트엔드를 같은 오리진에서 서빙하는 서비스입니다.
+Express + Drizzle ORM 백엔드 하나와, React / Vue / TypeScript(vanilla) / ECMAScript(vanilla)
+네 가지로 빌드한 프론트엔드를 같은 오리진에서 서빙하는 서비스입니다.
 
 ## 구조
 
 ```
 .
-├── Dockerfile              # 멀티스테이지: 3개 프론트엔드 + 백엔드 빌드 -> 런타임 이미지
+├── Dockerfile              # 멀티스테이지: 4개 프론트엔드 + 백엔드 빌드 -> 런타임 이미지
 ├── docker-compose.yml       # app(Express, 고정 호스트 포트) + db(postgres:17-alpine, 내부 전용)
 ├── backend/                 # Express API + Drizzle ORM 스키마/마이그레이션
 │   ├── src/
-│   │   ├── index.ts         # /, /react, /vue, /typescript, /api 라우팅
+│   │   ├── index.ts         # /, /react, /vue, /typescript, /ecma, /api 라우팅
 │   │   ├── db/              # schema.ts, client.ts(drizzle+pg pool), migrate.ts
 │   │   └── routes/people.ts # /api/people 페이지네이션 CRUD
 │   ├── drizzle/             # drizzle-kit generate 로 생성된 마이그레이션 (커밋됨)
 │   └── public/landing/      # 메뉴 랜딩 페이지 (정적 HTML)
 ├── frontend-react/          # Vite react-ts, base: /react/
 ├── frontend-vue/            # Vite vue-ts, base: /vue/
-└── frontend-typescript/     # Vite vanilla-ts, base: /typescript/
+├── frontend-typescript/     # Vite vanilla-ts, base: /typescript/
+└── frontend-ecma/           # Vite vanilla-js, base: /ecma/ — ES2015~최신 스펙 학습실
 ```
 
 런타임 이미지 안에서 Express 하나가 다음을 전부 처리합니다:
 
 - `GET /` — 메뉴 랜딩 페이지
-- `/react/*`, `/vue/*`, `/typescript/*` — 각 프레임워크로 빌드한 정적 파일 + SPA fallback
+- `/react/*`, `/vue/*`, `/typescript/*`, `/ecma/*` — 각 프레임워크로 빌드한 정적 파일 + SPA fallback
 - `/api/people` — Drizzle ORM으로 Postgres에 접근하는 페이지네이션 CRUD API
   (`{ id, name, age, job, address? }`, `GET /api/people?page=&pageSize=`로 목록,
   `GET/PUT/DELETE /api/people/:id`로 상세). `id`는 자동 증가가 아니라 클라이언트가
   POST/PUT body에 직접 넣는 값이다 — 중복 id로 생성하거나 기존 레코드의 id를 다른 값으로
   바꿔 저장(PK 변경)하면 `409`로 충돌을 알려준다.
 
-세 프론트엔드 모두 동일하게 `/api/people`을 호출해 페이지네이션이 있는 목록 조회/생성/삭제와
+네 프론트엔드 모두 동일하게 `/api/people`을 호출해 페이지네이션이 있는 목록 조회/생성/삭제와
 개별 레코드 상세 조회/수정/삭제(master-detail)를 지원하는 CRUD Demo 화면을 갖고 있습니다.
 최초 배포 시(테이블이 비어있을 때) 예시 인물 12명이 자동으로 채워집니다(`backend/src/db/seed.ts`).
 
+`frontend-ecma`는 TypeScript 학습실과 달리 CDN에서 컴파일러를 불러와 타입 검사를 흉내내는
+대신, 브라우저 자체 JS 엔진으로 코드를 직접 실행하고 `console.log` 출력을 캡처해 보여주는
+라이브 실습창을 갖고 있습니다(`src/ecmaPlayground.js`). ES2015(ES6)부터 ES2025까지 연도별로
+핵심 기능 페이지가 정리되어 있습니다.
+
 ## 로컬 개발
+
+`docker-compose.yml`(운영용)은 4개 프론트엔드를 전부 빌드해서 정적 파일로 서빙하므로,
+코드 한 줄 바꿀 때마다 이미지를 다시 빌드해야 해서 개발용으로는 느립니다. 로컬 개발에는
+아래 두 가지 방법 중 하나를 씁니다.
+
+### 방법 A — `docker-compose.local.yml` (권장)
+
+Postgres + backend(`tsx watch`) + 프론트엔드 4개(`vite dev`)를 모두 컨테이너로 띄우되,
+소스 디렉토리를 bind mount해서 파일을 저장하는 즉시 컨테이너 안에서 재컴파일/HMR이 동작합니다.
+`node_modules`는 named volume으로 분리되어 있어 호스트의 `npm install` 여부와 무관합니다.
+
+```bash
+docker compose -f docker-compose.local.yml up -d --build
+```
+
+| 서비스 | 접속 URL |
+|---|---|
+| backend API | http://localhost:4100/api/people |
+| react | http://localhost:5273/react/ |
+| vue | http://localhost:5274/vue/ |
+| typescript | http://localhost:5275/typescript/ |
+| ecma | http://localhost:5276/ecma/ |
+| Postgres (호스트에서 직접 접속용) | localhost:15432 |
+
+각 프론트엔드는 각자의 vite dev 서버가 `/api` 요청을 컨테이너 내부에서 `http://backend:4000`
+으로 프록시합니다. 브라우저는 항상 자기 자신의 오리진(5273~5276)에만 요청을 보내므로
+**CORS가 애초에 발생하지 않습니다.** (백엔드에도 `NODE_ENV !== "production"`일 때만 동작하는
+CORS 허용 미들웨어를 넣어뒀지만, 프록시를 쓰는 한 실제로 탈 일은 없습니다 — 프록시 없이
+브라우저에서 백엔드 포트로 직접 붙는 경우를 위한 안전장치입니다.)
+
+```bash
+docker compose -f docker-compose.local.yml down        # 컨테이너만 정리 (DB 데이터는 유지)
+docker compose -f docker-compose.local.yml down -v      # DB 데이터까지 초기화
+docker compose -f docker-compose.local.yml logs -f react   # 특정 서비스 로그만 보기
+```
+
+### 방법 B — 로컬 프로세스로 직접 실행
 
 각 프로젝트는 독립된 `package.json`을 가진 별도 패키지입니다 (workspace 아님).
 
@@ -50,6 +93,7 @@ npm run dev             # tsx watch, http://localhost:4000
 cd frontend-react && npm install && npm run dev   # http://localhost:5173
 cd frontend-vue && npm install && npm run dev
 cd frontend-typescript && npm install && npm run dev
+cd frontend-ecma && npm install && npm run dev
 ```
 
 `docker-compose.yml`의 `db`는 기본적으로 호스트에 포트를 노출하지 않으므로,

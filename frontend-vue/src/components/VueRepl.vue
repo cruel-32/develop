@@ -30,13 +30,26 @@ const store = useStore({
 
 store.setFiles(props.files, props.mainFile ?? "App.vue");
 
+// @vue/repl은 Auto Save를 켜면 250ms debounce로 즉시 컴파일/실행하는데, 이게 타이핑
+// 중간중간 튀는 느낌을 줘서 기본은 꺼둔다(수동으로 켤 수는 있음). Show Error도 기본은
+// 접어둔다 - 이 라이브러리는 이 두 상태를 각각 다른 방식으로 관리한다:
+// - autoSave는 Repl의 v-model(모델 값)로 컴포넌트 밖에서 직접 제어된다.
+// - showError는 컴포넌트 내부 상태라 밖에서 prop으로 못 주고, localStorage의
+//   "repl_show_error" 키를 초기값으로 읽는다(EditorContainer.vue 참고) - 그래서 마운트
+//   전에 그 키를 미리 심어준다. 사용자가 이미 한 번이라도 토글을 만졌다면 그 선택을
+//   존중해 덮어쓰지 않는다.
+const autoSave = ref(false);
+if (localStorage.getItem("repl_show_error") === null) {
+  localStorage.setItem("repl_show_error", "false");
+}
+
 async function handleReset() {
   await store.setFiles(props.files, props.mainFile ?? "App.vue");
 }
 </script>
 
 <template>
-  <div class="vue-repl-wrapper">
+  <div class="vue-repl-wrapper dark">
     <div class="vue-repl-toolbar">
       <span class="vue-repl-label">
         코드를 직접 수정해보세요
@@ -48,6 +61,7 @@ async function handleReset() {
     </div>
     <div class="vue-repl-body">
       <Repl
+        v-model="autoSave"
         :store="store"
         :editor="CodeMirror"
         theme="dark"

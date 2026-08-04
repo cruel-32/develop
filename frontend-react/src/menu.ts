@@ -59,6 +59,22 @@ export const menuTree: MenuNode[] = [
             label: "Zustand",
             path: "external-module/store/zustand",
           },
+          {
+            id: "jotai",
+            label: "Jotai",
+            path: "external-module/store/jotai",
+          },
+        ],
+      },
+      {
+        id: "data-fetching",
+        label: "Data Fetching",
+        children: [
+          {
+            id: "tanstack-query",
+            label: "TanStack Query",
+            path: "external-module/data-fetching/tanstack-query",
+          },
         ],
       },
     ],

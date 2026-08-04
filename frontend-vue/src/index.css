@@ -351,6 +351,15 @@ a:focus-visible {
   color: #cbd5e1;
 }
 
+/* .content code(본문 인라인 코드 강조)가 코드 블록 안의 <code>에도 걸려
+   배경색이 줄마다 깔리는 것을 막는다 - 코드 블록은 자체 배경만 사용한다. */
+.code-block code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: 1em;
+}
+
 /* Prism.js 토큰 색상 (별도 테마 CSS를 import하지 않고 직접 지정) */
 .code-block .token.comment {
   color: var(--text-faint);
