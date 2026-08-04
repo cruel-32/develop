@@ -41,7 +41,7 @@ export const menuTree: MenuNode[] = [
     id: "layout",
     label: "레이아웃",
     children: [
-      { id: "flexbox-grid", label: "Flexbox vs Grid", path: "layout/flexbox-grid" },
+      { id: "flexbox-grid", label: "Flexbox / Grid / display", path: "layout/flexbox-grid" },
       { id: "container-queries", label: "Container Queries", path: "layout/container-queries" },
     ],
   },
