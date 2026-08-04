@@ -1,6 +1,6 @@
-import type { PageRender } from "../../../router";
-import { mountHtmlCssPlayground } from "../../../htmlCssPlayground";
-import { codeBlock } from "../../../pageHelpers";
+import type { PageRender } from "../../router";
+import { mountHtmlCssPlayground } from "../../htmlCssPlayground";
+import { codeBlock } from "../../pageHelpers";
 
 const OLD_THEME = `
 /* 이전: 라이트/다크 값을 각각 다른 변수로 중복 선언하고 미디어 쿼리로 스위칭 */

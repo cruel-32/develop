@@ -1,6 +1,6 @@
-import type { PageRender } from "../../../router";
-import { mountHtmlCssPlayground } from "../../../htmlCssPlayground";
-import { codeBlock } from "../../../pageHelpers";
+import type { PageRender } from "../../router";
+import { mountHtmlCssPlayground } from "../../htmlCssPlayground";
+import { codeBlock } from "../../pageHelpers";
 
 const MEDIA_VS_CONTAINER = `
 /* @media: 뷰포트(브라우저 창) 크기만 본다 - 이 카드가 좁은 사이드바 안에 있어도

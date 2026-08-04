@@ -1,6 +1,6 @@
-import type { PageRender } from "../../../router";
-import { mountHtmlCssPlayground } from "../../../htmlCssPlayground";
-import { codeBlock } from "../../../pageHelpers";
+import type { PageRender } from "../../router";
+import { mountHtmlCssPlayground } from "../../htmlCssPlayground";
+import { codeBlock } from "../../pageHelpers";
 
 const NESTING_BEFORE_AFTER = `
 /* 이전: 전처리기(Sass/Less)가 있어야만 가능했던 중첩 문법 */

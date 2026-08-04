@@ -1,6 +1,6 @@
-import type { PageRender } from "../../../router";
-import { mountHtmlCssPlayground } from "../../../htmlCssPlayground";
-import { codeBlock } from "../../../pageHelpers";
+import type { PageRender } from "../../router";
+import { mountHtmlCssPlayground } from "../../htmlCssPlayground";
+import { codeBlock } from "../../pageHelpers";
 
 const OLD_WAY = `
 // 드롭다운 하나 만드는 데 필요했던 것들:

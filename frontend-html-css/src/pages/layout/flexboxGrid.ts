@@ -1,6 +1,6 @@
-import type { PageRender } from "../../../router";
-import { mountHtmlCssPlayground } from "../../../htmlCssPlayground";
-import { codeBlock } from "../../../pageHelpers";
+import type { PageRender } from "../../router";
+import { mountHtmlCssPlayground } from "../../htmlCssPlayground";
+import { codeBlock } from "../../pageHelpers";
 
 const FLOAT_HELL = `
 /* Grid 이전, 2차원 레이아웃을 흉내내던 방식 */

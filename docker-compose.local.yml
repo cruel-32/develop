@@ -26,7 +26,7 @@ services:
       # Windows Docker Desktop의 bind mount는 fs 이벤트를 못 넘길 때가 있어 폴링으로 대체한다.
       CHOKIDAR_USEPOLLING: "true"
       # 랜딩 페이지(/)와 /react 등 링크를 각 vite dev 서버의 호스트 포트로 보내기 위한 매핑.
-      FRONTEND_DEV_PORTS: "react=5273,vue=5274,typescript=5275,ecma=5276"
+      FRONTEND_DEV_PORTS: "react=5273,vue=5274,typescript=5275,ecma=5276,html-css=5277"
     ports:
       - "4100:4000"
     volumes:
@@ -96,6 +96,20 @@ services:
     depends_on:
       - backend
 
+  html-css:
+    build:
+      context: ./frontend-html-css
+      dockerfile: Dockerfile.dev
+    environment:
+      VITE_WATCH_POLL: "true"
+    ports:
+      - "5277:5173"
+    volumes:
+      - ./frontend-html-css:/app
+      - html-css-node-modules:/app/node_modules
+    depends_on:
+      - backend
+
 volumes:
   db-local-data:
   backend-node-modules:
@@ -103,3 +117,4 @@ volumes:
   vue-node-modules:
   typescript-node-modules:
   ecma-node-modules:
+  html-css-node-modules:

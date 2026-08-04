@@ -1,17 +1,17 @@
 # develop.cloudish.cloud
 
-Express + Drizzle ORM 백엔드 하나와, React / Vue / TypeScript(vanilla) / ECMAScript(vanilla)
-네 가지로 빌드한 프론트엔드를 같은 오리진에서 서빙하는 서비스입니다.
+Express + Drizzle ORM 백엔드 하나와, React / Vue / TypeScript(vanilla) / ECMAScript(vanilla) /
+HTML5·CSS 다섯 가지로 빌드한 프론트엔드를 같은 오리진에서 서빙하는 서비스입니다.
 
 ## 구조
 
 ```
 .
-├── Dockerfile              # 멀티스테이지: 4개 프론트엔드 + 백엔드 빌드 -> 런타임 이미지
+├── Dockerfile              # 멀티스테이지: 5개 프론트엔드 + 백엔드 빌드 -> 런타임 이미지
 ├── docker-compose.yml       # app(Express, 고정 호스트 포트) + db(postgres:17-alpine, 내부 전용)
 ├── backend/                 # Express API + Drizzle ORM 스키마/마이그레이션
 │   ├── src/
-│   │   ├── index.ts         # /, /react, /vue, /typescript, /ecma, /api 라우팅
+│   │   ├── index.ts         # /, /react, /vue, /typescript, /ecma, /html-css, /api 라우팅
 │   │   ├── db/              # schema.ts, client.ts(drizzle+pg pool), migrate.ts
 │   │   └── routes/people.ts # /api/people 페이지네이션 CRUD
 │   ├── drizzle/             # drizzle-kit generate 로 생성된 마이그레이션 (커밋됨)
@@ -19,37 +19,46 @@ Express + Drizzle ORM 백엔드 하나와, React / Vue / TypeScript(vanilla) / E
 ├── frontend-react/          # Vite react-ts, base: /react/
 ├── frontend-vue/            # Vite vue-ts, base: /vue/
 ├── frontend-typescript/     # Vite vanilla-ts, base: /typescript/
-└── frontend-ecma/           # Vite vanilla-js, base: /ecma/ — ES2015~최신 스펙 학습실
+├── frontend-ecma/           # Vite vanilla-js, base: /ecma/ — ES2015~최신 스펙 학습실
+└── frontend-html-css/       # Vite vanilla-ts, base: /html-css/ — HTML5/CSS 최신 스펙 학습실
 ```
 
 런타임 이미지 안에서 Express 하나가 다음을 전부 처리합니다:
 
 - `GET /` — 메뉴 랜딩 페이지
-- `/react/*`, `/vue/*`, `/typescript/*`, `/ecma/*` — 각 프레임워크로 빌드한 정적 파일 + SPA fallback
+- `/react/*`, `/vue/*`, `/typescript/*`, `/ecma/*`, `/html-css/*` — 각 프론트엔드로 빌드한
+  정적 파일 + SPA fallback
 - `/api/people` — Drizzle ORM으로 Postgres에 접근하는 페이지네이션 CRUD API
   (`{ id, name, age, job, address? }`, `GET /api/people?page=&pageSize=`로 목록,
   `GET/PUT/DELETE /api/people/:id`로 상세). `id`는 자동 증가가 아니라 클라이언트가
   POST/PUT body에 직접 넣는 값이다 — 중복 id로 생성하거나 기존 레코드의 id를 다른 값으로
   바꿔 저장(PK 변경)하면 `409`로 충돌을 알려준다.
 
-네 프론트엔드 모두 동일하게 `/api/people`을 호출해 페이지네이션이 있는 목록 조회/생성/삭제와
-개별 레코드 상세 조회/수정/삭제(master-detail)를 지원하는 CRUD Demo 화면을 갖고 있습니다.
-최초 배포 시(테이블이 비어있을 때) 예시 인물 12명이 자동으로 채워집니다(`backend/src/db/seed.ts`).
+React/Vue/TypeScript/ECMAScript 네 프론트엔드는 동일하게 `/api/people`을 호출해 페이지네이션이
+있는 목록 조회/생성/삭제와 개별 레코드 상세 조회/수정/삭제(master-detail)를 지원하는 CRUD Demo
+화면을 갖고 있습니다. 최초 배포 시(테이블이 비어있을 때) 예시 인물 12명이 자동으로 채워집니다
+(`backend/src/db/seed.ts`).
 
 `frontend-ecma`는 TypeScript 학습실과 달리 CDN에서 컴파일러를 불러와 타입 검사를 흉내내는
 대신, 브라우저 자체 JS 엔진으로 코드를 직접 실행하고 `console.log` 출력을 캡처해 보여주는
 라이브 실습창을 갖고 있습니다(`src/ecmaPlayground.js`). ES2015(ES6)부터 ES2025까지 연도별로
 핵심 기능 페이지가 정리되어 있습니다.
 
+`frontend-html-css`는 특정 JS 프레임워크에 종속되지 않는 HTML5/CSS 스펙(`<dialog>`,
+`:has()`, Container Queries, View Transitions API 등)을 주제별로 정리한 학습실입니다.
+HTML/CSS를 직접 고쳐가며 iframe으로 바로 결과를 확인하는 실습창을 갖고 있습니다
+(`src/htmlCssPlayground.ts`). CRUD API를 쓰지 않는 순수 정적 학습 공간이라 CRUD Demo는
+없습니다.
+
 ## 로컬 개발
 
-`docker-compose.yml`(운영용)은 4개 프론트엔드를 전부 빌드해서 정적 파일로 서빙하므로,
+`docker-compose.yml`(운영용)은 5개 프론트엔드를 전부 빌드해서 정적 파일로 서빙하므로,
 코드 한 줄 바꿀 때마다 이미지를 다시 빌드해야 해서 개발용으로는 느립니다. 로컬 개발에는
 아래 두 가지 방법 중 하나를 씁니다.
 
 ### 방법 A — `docker-compose.local.yml` (권장)
 
-Postgres + backend(`tsx watch`) + 프론트엔드 4개(`vite dev`)를 모두 컨테이너로 띄우되,
+Postgres + backend(`tsx watch`) + 프론트엔드 5개(`vite dev`)를 모두 컨테이너로 띄우되,
 소스 디렉토리를 bind mount해서 파일을 저장하는 즉시 컨테이너 안에서 재컴파일/HMR이 동작합니다.
 `node_modules`는 named volume으로 분리되어 있어 호스트의 `npm install` 여부와 무관합니다.
 
@@ -64,13 +73,15 @@ docker compose -f docker-compose.local.yml up -d --build
 | vue | http://localhost:5274/vue/ |
 | typescript | http://localhost:5275/typescript/ |
 | ecma | http://localhost:5276/ecma/ |
+| html-css | http://localhost:5277/html-css/ |
 | Postgres (호스트에서 직접 접속용) | localhost:15432 |
 
 각 프론트엔드는 각자의 vite dev 서버가 `/api` 요청을 컨테이너 내부에서 `http://backend:4000`
-으로 프록시합니다. 브라우저는 항상 자기 자신의 오리진(5273~5276)에만 요청을 보내므로
-**CORS가 애초에 발생하지 않습니다.** (백엔드에도 `NODE_ENV !== "production"`일 때만 동작하는
-CORS 허용 미들웨어를 넣어뒀지만, 프록시를 쓰는 한 실제로 탈 일은 없습니다 — 프록시 없이
-브라우저에서 백엔드 포트로 직접 붙는 경우를 위한 안전장치입니다.)
+으로 프록시합니다(`html-css`는 CRUD Demo가 없어 `/api`를 쓰지 않으므로 프록시 설정도 없습니다).
+브라우저는 항상 자기 자신의 오리진(5273~5277)에만 요청을 보내므로 **CORS가 애초에 발생하지
+않습니다.** (백엔드에도 `NODE_ENV !== "production"`일 때만 동작하는 CORS 허용 미들웨어를
+넣어뒀지만, 프록시를 쓰는 한 실제로 탈 일은 없습니다 — 프록시 없이 브라우저에서 백엔드 포트로
+직접 붙는 경우를 위한 안전장치입니다.)
 
 ```bash
 docker compose -f docker-compose.local.yml down        # 컨테이너만 정리 (DB 데이터는 유지)
@@ -94,6 +105,7 @@ cd frontend-react && npm install && npm run dev   # http://localhost:5173
 cd frontend-vue && npm install && npm run dev
 cd frontend-typescript && npm install && npm run dev
 cd frontend-ecma && npm install && npm run dev
+cd frontend-html-css && npm install && npm run dev
 ```
 
 `docker-compose.yml`의 `db`는 기본적으로 호스트에 포트를 노출하지 않으므로,
@@ -134,10 +146,10 @@ docker compose up -d --build
 ## CI/CD (GitHub Actions → 홈서버 자동 배포)
 
 `master`에 push하면 `.github/workflows/deploy.yml`이 SSH로 홈서버에 접속해
-`git pull` → `docker compose up -d --build`(멀티스테이지 Dockerfile이 backend +
-frontend-react/vue/typescript를 전부 다시 빌드) → 오래된 이미지 정리 → 헬스체크(`curl /`)
-순으로 배포합니다. `workflow_dispatch`로 수동 실행도 가능하고, 연달아 push해도
-`concurrency` 그룹으로 배포가 겹쳐 실행되지 않습니다.
+`git pull` → `docker compose up -d --build`(멀티스테이지 Dockerfile이 backend + 5개
+프론트엔드를 전부 다시 빌드) → 오래된 이미지 정리 → 헬스체크(`curl /`) 순으로 배포합니다.
+`workflow_dispatch`로 수동 실행도 가능하고, 연달아 push해도 `concurrency` 그룹으로 배포가
+겹쳐 실행되지 않습니다.
 
 ### 최초 1회 설정 (홈서버 쪽)
 
@@ -175,3 +187,5 @@ ssh <SSH_USER>@<SSH_HOST> "sudo usermod -aG docker <SSH_USER>"
 2. 루트 `Dockerfile`에 빌드 스테이지 추가 후 런타임 스테이지에 `COPY --from=<name>-build /app/dist ./public/<name>` 추가
 3. `backend/src/index.ts`의 `FRONTEND_APPS` 배열에 `"<name>"` 추가
 4. `backend/public/landing/index.html`에 메뉴 링크 추가
+5. `docker-compose.local.yml`에 새 서비스 추가(빈 호스트 포트로), `backend`의
+   `FRONTEND_DEV_PORTS` 환경변수에 `<name>=<포트>` 추가, `.dockerignore`/`Dockerfile.dev` 생성
