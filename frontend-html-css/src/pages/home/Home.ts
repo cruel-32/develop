@@ -12,8 +12,9 @@ export const render: PageRender = (container) => {
       <p>
         <code>&lt;dialog&gt;</code>/<code>&lt;details&gt;</code> 같은 시맨틱 엘리먼트부터,
         <code>:has()</code>·CSS Nesting·<code>@layer</code> 같은 선택자/캐스케이드,
-        Container Queries·View Transitions 같은 비교적 최신 스펙까지 주제별로 정리되어
-        있습니다.
+        Container Queries·View Transitions 같은 비교적 최신 스펙, <code>&lt;video&gt;</code>/
+        <code>&lt;audio&gt;</code>와 Picture-in-Picture 같은 미디어 API까지 주제별로
+        정리되어 있습니다.
       </p>
     </article>
   `;

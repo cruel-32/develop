@@ -65,4 +65,20 @@ export const menuTree: MenuNode[] = [
       { id: "view-transitions", label: "View Transitions API", path: "color-motion/view-transitions" },
     ],
   },
+  {
+    id: "media",
+    label: "미디어",
+    children: [
+      {
+        id: "video-audio-api",
+        label: "<video>/<audio> + HTMLMediaElement API",
+        path: "media/video-audio-api",
+      },
+      {
+        id: "track-captions-pip",
+        label: "<track> 자막 + Picture-in-Picture",
+        path: "media/track-captions-pip",
+      },
+    ],
+  },
 ];

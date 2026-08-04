@@ -14,6 +14,8 @@ import { render as hasSelectorRender } from "./pages/selectors/hasSelector";
 import { render as cascadeLayersRender } from "./pages/selectors/cascadeLayers";
 import { render as customPropertiesColorRender } from "./pages/color-motion/customPropertiesColor";
 import { render as viewTransitionsRender } from "./pages/color-motion/viewTransitions";
+import { render as videoAudioApiRender } from "./pages/media/videoAudioApi";
+import { render as trackCaptionsPipRender } from "./pages/media/trackCaptionsPip";
 
 registerRoute("", homeRender);
 registerRoute("semantics/dialog-element", dialogElementRender);
@@ -26,6 +28,8 @@ registerRoute("selectors/has-selector", hasSelectorRender);
 registerRoute("selectors/cascade-layers", cascadeLayersRender);
 registerRoute("color-motion/custom-properties-color", customPropertiesColorRender);
 registerRoute("color-motion/view-transitions", viewTransitionsRender);
+registerRoute("media/video-audio-api", videoAudioApiRender);
+registerRoute("media/track-captions-pip", trackCaptionsPipRender);
 
 const root = document.querySelector<HTMLDivElement>("#app")!;
 const { contentEl, pageIndexEl } = mountLayout(root);

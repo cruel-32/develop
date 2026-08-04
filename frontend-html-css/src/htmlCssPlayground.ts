@@ -50,7 +50,7 @@ export function mountHtmlCssPlayground(container: HTMLElement, opts: HtmlCssPlay
           <textarea class="html-css-playground-editor" id="${id}-editor-html" spellcheck="false" autocapitalize="off"></textarea>
           <textarea class="html-css-playground-editor" id="${id}-editor-css" spellcheck="false" autocapitalize="off" hidden></textarea>
         </div>
-        <iframe class="html-css-playground-preview" id="${id}-preview" title="미리보기" sandbox="allow-scripts"></iframe>
+        <iframe class="html-css-playground-preview" id="${id}-preview" title="미리보기" sandbox="allow-scripts" allow="picture-in-picture"></iframe>
       </div>
     </div>
   `;
