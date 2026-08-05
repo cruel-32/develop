@@ -71,10 +71,10 @@ export const render: PageRender = (container) => {
         <code>WHERE</code> 자체를 생략하고, 맨 앞의 불필요한 <code>AND</code>도
         자동으로 정리해줍니다.
       </p>
-      ${codeBlock(XML_MAPPER, "동적 WHERE 조건")}
+      ${codeBlock(XML_MAPPER, "동적 WHERE 조건", "xml")}
 
       <h2 id="param-binding">#{ } vs \${ }</h2>
-      ${codeBlock(PARAM_BINDING, "파라미터 바인딩 방식의 차이")}
+      ${codeBlock(PARAM_BINDING, "파라미터 바인딩 방식의 차이", "sql")}
       <p class="hint">
         <code>#{...}</code>는 항상 우선적으로 고려하고, <code>\${...}</code>는
         정렬 컬럼명처럼 값이 아니라 SQL 구조 자체를 동적으로 바꿔야 하는 극히 제한된

@@ -1,15 +1,27 @@
+import Prism from "prismjs";
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-sql";
+// prismjs 코어 번들에 이미 clike/markup(HTML·XML)이 포함되어 있어 java는 별도 import만
+// 있으면 되고(clike를 확장), markup은 core에서 바로 쓸 수 있다.
+
 export function escapeHtml(value: string): string {
   const div = document.createElement("div");
   div.textContent = value;
   return div.innerHTML;
 }
 
-/** 정적(비실행) 코드 예시를 보여줄 때 쓰는 공통 블록. 라이브 실습이 불가능한 경우에도 사용한다. */
-export function codeBlock(code: string, title?: string): string {
+/**
+ * 정적(비실행) 코드 예시를 보여줄 때 쓰는 공통 블록. 라이브 실습이 불가능한 Spring/외부
+ * 모듈 페이지에서는 이 블록이 유일한 코드 표시 수단이라, ecma 학습실과 같은 방식으로
+ * Prism.js로 하이라이팅한다(react-live의 vsDark 팔레트와 맞춘 색상 — index.css 참고).
+ */
+export function codeBlock(code: string, title?: string, language: "java" | "xml" | "sql" = "java"): string {
+  const grammar = Prism.languages[language] ?? Prism.languages.java;
+  const highlighted = Prism.highlight(code.trim(), grammar, language);
   return `
     <div class="code-block-wrapper">
       ${title ? `<p class="code-title">${escapeHtml(title)}</p>` : ""}
-      <pre class="code-block"><code>${escapeHtml(code.trim())}</code></pre>
+      <pre class="code-block"><code>${highlighted}</code></pre>
     </div>
   `;
 }

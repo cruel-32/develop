@@ -366,6 +366,67 @@ textarea:focus-visible {
   white-space: pre-wrap;
 }
 
+.code-block code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: 1em;
+}
+
+/* Prism.js 토큰 색상 - react-live(prism-react-renderer)의 vsDark 테마와 동일한 팔레트
+   (ecma 학습실의 index.css와 동일) */
+.code-block .token.comment,
+.code-block .token.prolog {
+  color: rgb(106, 153, 85);
+}
+.code-block .token.builtin,
+.code-block .token.changed,
+.code-block .token.keyword,
+.code-block .token.interpolation-punctuation {
+  color: rgb(86, 156, 214);
+}
+.code-block .token.number,
+.code-block .token.inserted {
+  color: rgb(181, 206, 168);
+}
+.code-block .token.constant {
+  color: rgb(100, 102, 149);
+}
+.code-block .token.attr-name,
+.code-block .token.variable {
+  color: rgb(156, 220, 254);
+}
+.code-block .token.deleted,
+.code-block .token.string,
+.code-block .token.attr-value,
+.code-block .token.template-punctuation {
+  color: rgb(206, 145, 120);
+}
+.code-block .token.selector {
+  color: rgb(215, 186, 125);
+}
+.code-block .token.tag {
+  color: rgb(86, 156, 214);
+}
+.code-block .token.punctuation,
+.code-block .token.operator {
+  color: rgb(212, 212, 212);
+}
+.code-block .token.function {
+  color: rgb(220, 220, 170);
+}
+.code-block .token.class-name {
+  color: rgb(78, 201, 176);
+}
+.code-block .token.char {
+  color: rgb(209, 105, 105);
+}
+/* Java 애노테이션(@Configuration, @Bean 등) - Spring 페이지 대부분이 이 문법을 다뤄서
+   기본 텍스트 색과 분명히 구분되는 색을 따로 준다 */
+.code-block .token.annotation {
+  color: rgb(215, 186, 125);
+}
+
 .crash-box {
   margin: 1.5rem 0;
   padding: 1.25rem;
