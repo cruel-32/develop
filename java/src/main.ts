@@ -1,0 +1,51 @@
+import "./index.css";
+import { mountLayout } from "./layout";
+import { registerRoute, initRouter } from "./router";
+import { updatePageIndex } from "./pageIndex";
+
+import { render as homeRender } from "./pages/home/Home";
+import { render as variablesTypesRender } from "./pages/basics/variablesTypes";
+import { render as controlFlowRender } from "./pages/basics/controlFlow";
+import { render as arraysRender } from "./pages/basics/arrays";
+import { render as classesConstructorsRender } from "./pages/oop/classesConstructors";
+import { render as inheritancePolymorphismRender } from "./pages/oop/inheritancePolymorphism";
+import { render as interfacesAbstractRender } from "./pages/oop/interfacesAbstract";
+import { render as collectionsBasicsRender } from "./pages/collections/collectionsBasics";
+import { render as genericsRender } from "./pages/collections/generics";
+import { render as lambdaRender } from "./pages/functional/lambda";
+import { render as streamApiRender } from "./pages/functional/streamApi";
+import { render as tryCatchFinallyRender } from "./pages/exceptions/tryCatchFinally";
+import { render as customExceptionsRender } from "./pages/exceptions/customExceptions";
+import { render as springCoreRender } from "./pages/spring/core";
+import { render as springRestApiRender } from "./pages/spring/restApi";
+import { render as springSecurityRender } from "./pages/spring/security";
+import { render as jpaRender } from "./pages/modules/jpa";
+import { render as querydslRender } from "./pages/modules/querydsl";
+import { render as lombokRender } from "./pages/modules/lombok";
+import { render as mybatisRender } from "./pages/modules/mybatis";
+
+registerRoute("", homeRender);
+registerRoute("basics/variables-types", variablesTypesRender);
+registerRoute("basics/control-flow", controlFlowRender);
+registerRoute("basics/arrays", arraysRender);
+registerRoute("oop/classes-constructors", classesConstructorsRender);
+registerRoute("oop/inheritance-polymorphism", inheritancePolymorphismRender);
+registerRoute("oop/interfaces-abstract", interfacesAbstractRender);
+registerRoute("collections/collections-basics", collectionsBasicsRender);
+registerRoute("collections/generics", genericsRender);
+registerRoute("functional/lambda", lambdaRender);
+registerRoute("functional/stream-api", streamApiRender);
+registerRoute("exceptions/try-catch-finally", tryCatchFinallyRender);
+registerRoute("exceptions/custom-exceptions", customExceptionsRender);
+registerRoute("spring/core", springCoreRender);
+registerRoute("spring/rest-api", springRestApiRender);
+registerRoute("spring/security", springSecurityRender);
+registerRoute("modules/jpa", jpaRender);
+registerRoute("modules/querydsl", querydslRender);
+registerRoute("modules/lombok", lombokRender);
+registerRoute("modules/mybatis", mybatisRender);
+
+const root = document.querySelector<HTMLDivElement>("#app")!;
+const { contentEl, pageIndexEl } = mountLayout(root);
+
+initRouter(contentEl, () => updatePageIndex(contentEl, pageIndexEl));

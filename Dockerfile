@@ -42,6 +42,13 @@ RUN npm ci
 COPY postgre/ ./
 RUN npm run build
 
+FROM node:24-alpine AS java-build
+WORKDIR /app
+COPY java/package.json java/package-lock.json ./
+RUN npm ci
+COPY java/ ./
+RUN npm run build
+
 FROM node:24-alpine AS backend-build
 WORKDIR /app
 COPY backend/package.json backend/package-lock.json ./
@@ -63,6 +70,10 @@ COPY --from=typescript-build /app/dist ./public/typescript
 COPY --from=ecma-build /app/dist ./public/ecma
 COPY --from=html-css-build /app/dist ./public/html-css
 COPY --from=postgre-build /app/dist ./public/postgre
+COPY --from=java-build /app/dist ./public/java
+# CheerpJ가 "/app/tools.jar" classpath 항목을 페이지의 오리진 루트에서 찾으므로,
+# /java 하위가 아니라 도메인 루트에도 별도로 같은 파일을 둔다(backend의 /tools.jar 라우트가 서빙).
+COPY --from=java-build /app/dist/tools.jar ./public/tools.jar
 
 EXPOSE 4000
 CMD ["node", "dist/index.js"]

@@ -31,7 +31,15 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use("/api/people", peopleRouter);
 
-const FRONTEND_APPS = ["react", "vue", "typescript", "ecma", "html-css", "postgre"] as const;
+// CheerpJ(java 학습실의 WASM JVM)는 classpath 항목 "/app/tools.jar"를 현재 페이지의
+// 오리진 루트에서 찾는다(base 경로인 /java 무시). 그래서 java 앱 자체의 정적 파일과
+// 별개로, 도메인 루트에도 같은 tools.jar를 명시적으로 서빙해야 한다. 로컬 dev
+// 서버(java/vite.config.ts)에는 이 요청을 흉내내는 별도 플러그인이 있다.
+app.get("/tools.jar", (_req, res) => {
+  res.sendFile(path.join(publicDir, "tools.jar"));
+});
+
+const FRONTEND_APPS = ["react", "vue", "typescript", "ecma", "html-css", "postgre", "java"] as const;
 
 // 개발 모드(docker-compose.local.yml)에서는 각 프론트엔드가 자기 자신의 vite dev 서버
 // (별도 호스트 포트)에서 뜨고, backend는 빌드된 정적 파일을 갖고 있지 않다. 이때는
