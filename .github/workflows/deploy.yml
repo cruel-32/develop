@@ -31,7 +31,7 @@ jobs:
             git fetch origin master
             git reset --hard origin/master
 
-            # Dockerfile이 멀티스테이지로 backend + frontend-react/vue/typescript를
+            # Dockerfile이 멀티스테이지로 backend + react/vue/typescript/ecma/html-css/postgre를
             # 전부 빌드하므로, 이 한 줄이 "각 프로젝트 빌드"에 해당한다.
             docker compose up -d --build
 

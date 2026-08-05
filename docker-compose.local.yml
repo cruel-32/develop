@@ -26,7 +26,7 @@ services:
       # Windows Docker Desktop의 bind mount는 fs 이벤트를 못 넘길 때가 있어 폴링으로 대체한다.
       CHOKIDAR_USEPOLLING: "true"
       # 랜딩 페이지(/)와 /react 등 링크를 각 vite dev 서버의 호스트 포트로 보내기 위한 매핑.
-      FRONTEND_DEV_PORTS: "react=5273,vue=5274,typescript=5275,ecma=5276,html-css=5277"
+      FRONTEND_DEV_PORTS: "react=5273,vue=5274,typescript=5275,ecma=5276,html-css=5277,postgre=5278"
     ports:
       - "4100:4000"
     volumes:
@@ -38,7 +38,7 @@ services:
 
   react:
     build:
-      context: ./frontend-react
+      context: ./react
       dockerfile: Dockerfile.dev
     environment:
       VITE_API_PROXY_TARGET: http://backend:4000
@@ -46,14 +46,14 @@ services:
     ports:
       - "5273:5173"
     volumes:
-      - ./frontend-react:/app
+      - ./react:/app
       - react-node-modules:/app/node_modules
     depends_on:
       - backend
 
   vue:
     build:
-      context: ./frontend-vue
+      context: ./vue
       dockerfile: Dockerfile.dev
     environment:
       VITE_API_PROXY_TARGET: http://backend:4000
@@ -61,14 +61,14 @@ services:
     ports:
       - "5274:5173"
     volumes:
-      - ./frontend-vue:/app
+      - ./vue:/app
       - vue-node-modules:/app/node_modules
     depends_on:
       - backend
 
   typescript:
     build:
-      context: ./frontend-typescript
+      context: ./typescript
       dockerfile: Dockerfile.dev
     environment:
       VITE_API_PROXY_TARGET: http://backend:4000
@@ -76,14 +76,14 @@ services:
     ports:
       - "5275:5173"
     volumes:
-      - ./frontend-typescript:/app
+      - ./typescript:/app
       - typescript-node-modules:/app/node_modules
     depends_on:
       - backend
 
   ecma:
     build:
-      context: ./frontend-ecma
+      context: ./ecma
       dockerfile: Dockerfile.dev
     environment:
       VITE_API_PROXY_TARGET: http://backend:4000
@@ -91,22 +91,36 @@ services:
     ports:
       - "5276:5173"
     volumes:
-      - ./frontend-ecma:/app
+      - ./ecma:/app
       - ecma-node-modules:/app/node_modules
     depends_on:
       - backend
 
   html-css:
     build:
-      context: ./frontend-html-css
+      context: ./html-css
       dockerfile: Dockerfile.dev
     environment:
       VITE_WATCH_POLL: "true"
     ports:
       - "5277:5173"
     volumes:
-      - ./frontend-html-css:/app
+      - ./html-css:/app
       - html-css-node-modules:/app/node_modules
+    depends_on:
+      - backend
+
+  postgre:
+    build:
+      context: ./postgre
+      dockerfile: Dockerfile.dev
+    environment:
+      VITE_WATCH_POLL: "true"
+    ports:
+      - "5278:5173"
+    volumes:
+      - ./postgre:/app
+      - postgre-node-modules:/app/node_modules
     depends_on:
       - backend
 
@@ -118,3 +132,4 @@ volumes:
   typescript-node-modules:
   ecma-node-modules:
   html-css-node-modules:
+  postgre-node-modules:

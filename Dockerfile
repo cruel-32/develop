@@ -2,37 +2,44 @@
 
 FROM node:24-alpine AS react-build
 WORKDIR /app
-COPY frontend-react/package.json frontend-react/package-lock.json ./
+COPY react/package.json react/package-lock.json ./
 RUN npm ci
-COPY frontend-react/ ./
+COPY react/ ./
 RUN npm run build
 
 FROM node:24-alpine AS vue-build
 WORKDIR /app
-COPY frontend-vue/package.json frontend-vue/package-lock.json ./
+COPY vue/package.json vue/package-lock.json ./
 RUN npm ci
-COPY frontend-vue/ ./
+COPY vue/ ./
 RUN npm run build
 
 FROM node:24-alpine AS typescript-build
 WORKDIR /app
-COPY frontend-typescript/package.json frontend-typescript/package-lock.json ./
+COPY typescript/package.json typescript/package-lock.json ./
 RUN npm ci
-COPY frontend-typescript/ ./
+COPY typescript/ ./
 RUN npm run build
 
 FROM node:24-alpine AS ecma-build
 WORKDIR /app
-COPY frontend-ecma/package.json frontend-ecma/package-lock.json ./
+COPY ecma/package.json ecma/package-lock.json ./
 RUN npm ci
-COPY frontend-ecma/ ./
+COPY ecma/ ./
 RUN npm run build
 
 FROM node:24-alpine AS html-css-build
 WORKDIR /app
-COPY frontend-html-css/package.json frontend-html-css/package-lock.json ./
+COPY html-css/package.json html-css/package-lock.json ./
 RUN npm ci
-COPY frontend-html-css/ ./
+COPY html-css/ ./
+RUN npm run build
+
+FROM node:24-alpine AS postgre-build
+WORKDIR /app
+COPY postgre/package.json postgre/package-lock.json ./
+RUN npm ci
+COPY postgre/ ./
 RUN npm run build
 
 FROM node:24-alpine AS backend-build
@@ -55,6 +62,7 @@ COPY --from=vue-build /app/dist ./public/vue
 COPY --from=typescript-build /app/dist ./public/typescript
 COPY --from=ecma-build /app/dist ./public/ecma
 COPY --from=html-css-build /app/dist ./public/html-css
+COPY --from=postgre-build /app/dist ./public/postgre
 
 EXPOSE 4000
 CMD ["node", "dist/index.js"]

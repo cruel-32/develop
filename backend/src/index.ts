@@ -31,7 +31,7 @@ if (process.env.NODE_ENV !== "production") {
 
 app.use("/api/people", peopleRouter);
 
-const FRONTEND_APPS = ["react", "vue", "typescript", "ecma", "html-css"] as const;
+const FRONTEND_APPS = ["react", "vue", "typescript", "ecma", "html-css", "postgre"] as const;
 
 // 개발 모드(docker-compose.local.yml)에서는 각 프론트엔드가 자기 자신의 vite dev 서버
 // (별도 호스트 포트)에서 뜨고, backend는 빌드된 정적 파일을 갖고 있지 않다. 이때는
